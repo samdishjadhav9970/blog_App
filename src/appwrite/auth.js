@@ -52,6 +52,7 @@ export class AuthService {
         } catch (error) {
             console.log(` logout ${error}`);
         }
+        
     }
 
 
