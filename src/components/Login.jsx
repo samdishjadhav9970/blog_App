@@ -9,11 +9,10 @@ import { useForm } from "react-hook-form";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
 
-  
   const login = async (data) => {
     setError("");
     try {
@@ -52,20 +51,36 @@ function Login() {
         </p>
         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
         <form action="" onSubmit={handleSubmit(login)} className="mt-8">
-            <div className="space-y-5">
-                <Input 
-                label = "Email : " 
-                placeholder= 'Enter Your Email'
-                type = "email"
-                {...register('email', {
-                    required : true,
-                    validate : {
-                        matchPatern : (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/ ||
-                        'Invalid Email'
-                    }
-                })}
-                />
-            </div>
+          <div className="space-y-5">
+            <Input
+              label="Email : "
+              placeholder="Enter Your Email"
+              type="email"
+              {...register("email", {
+                required: true,
+                validate: {
+                  matchPattern: (value) =>
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(value) ||
+                    "Invalid Email",
+                },
+              })}
+            />
+            <Input
+              label="Password :"
+              type="password"
+              placeholder="Enter Your Password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long",
+                },
+              })}
+            />
+            <Button type="submit" className="w-full">
+              Sign in
+            </Button>
+          </div>
         </form>
       </div>
     </div>
