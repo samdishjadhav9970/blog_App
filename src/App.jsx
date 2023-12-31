@@ -1,30 +1,37 @@
-import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import './App.css'
-import authService from './appwrite/auth'
-import { login, logout } from './store/authSlice'
-import { Footer, Header } from './components'
-import { Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Outlet } from 'react-router-dom';
+import { Footer, Header } from './components';
+import authService from './appwrite/auth';
+import { login, logout } from './store/authSlice';
 
 function App() {
-  const [loading, setLoading] = useState(true)
-  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
-    authService.getCurrentUser()
-    .then((userData)=>{
-      if (userData) {
-        dispatch(login({userData}))
-      } else{
-        dispatch(logout())
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const userData = await authService.getCurrentUser();
+        if (userData) {
+          dispatch(login({ userData }));
+        } else {
+          dispatch(logout());
+        }
+      } finally {
+        setLoading(false);
       }
-    })
-    .finally(()=>setLoading(false))
-  },[])
+    };
 
-  
-  return !loading ? (
-    <div className="min-h-screen flex flex-wrap content-between bg-gray-400 ">
+    fetchCurrentUser();
+  }, [dispatch]);
+
+  if (loading) {
+    return null; // or a loading spinner/message
+  }
+
+  return (
+    <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
       <div className="w-full block">
         <Header />
         <main>
@@ -33,9 +40,7 @@ function App() {
         <Footer />
       </div>
     </div>
-  ) : null;
-
-
+  );
 }
 
-export default App
+export default App;
